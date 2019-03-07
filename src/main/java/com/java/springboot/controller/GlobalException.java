@@ -5,6 +5,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 
+/**
+ * 获取异常的三种方式：
+ *      1、@ControllerAdvice+@ExceptionHandler
+ *      2、@ExceptionHandler
+ *      3、实现HandlerExceptionResolver
+ *      4、往spring容器中注入：SimpleMappingExceptionResolver
+ */
 @ControllerAdvice
 public class GlobalException {
 
@@ -57,5 +64,28 @@ public class GlobalException {
     }
 
 
+//    @Configuration
+//    class CustomerException implements HandlerExceptionResolver {
+//
+//        @Override
+//        public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+//                                             Object o, Exception e) {
+//            ModelAndView mv = new ModelAndView();
+//            mv.addObject("msg",e.getMessage());
+//            mv.setViewName("error");
+//            return null;
+//        }
+//
+//        @Bean
+//        public SimpleMappingExceptionResolver getSimpleMappingExceptionResolver(){
+//            SimpleMappingExceptionResolver simpleMappingExceptionResolver = new SimpleMappingExceptionResolver();
+//
+//            simpleMappingExceptionResolver.setExcludedExceptions(new Class[]{java.lang.InstantiationException.class});
+//
+//            simpleMappingExceptionResolver.setDefaultErrorView("error");
+//
+//            return simpleMappingExceptionResolver;
+//        }
+//    }
 
 }
