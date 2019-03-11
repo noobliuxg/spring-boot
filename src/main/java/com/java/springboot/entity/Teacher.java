@@ -1,10 +1,11 @@
 package com.java.springboot.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "TEACHER")
-public class Teacher {
+public class Teacher implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

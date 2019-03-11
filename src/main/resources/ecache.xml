@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ehcache xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!--
+        磁盘存储：将缓存中暂时不使用的对象，转移到磁盘中，类似于windows系统中的虚拟内存
+        path：指定在磁盘中存储对象的路径
+    -->
+    <diskStore path="java.io.tmpdir"/>
+    <!--
+        defaultCache：默认的存储配置，如果不加特殊说明，则所有对象都按照此配置处置
+        maxElementsInMemory：设置缓存的上限，则最多存储多少个对象
+        eternal：代表对象是否永不过期
+        timeToIdelSeconds：最大的发呆时间
+        timeToLiveSeconds：最大的存活时间
+        overflowToDisk：如果内存中数据超过限制，是否允许对象写入到磁盘中，默认为true
+        maxElementsOnDisk：在磁盘中缓存的element的最大数目，默认为0，不受限制
+        diskPersistent：是否在磁盘中持久化。指定jvm重启后，数据是否有效，默认为false
+        diskExpiryThreadIntervalSeconds：对象检测线程运行时间间隔。标识对象状态的线程多久执行一次
+        diskSpoolBufferSizeMB：DiskStore使用磁盘的大小，默认为30MB。每个cache使用各自的DiskStore
+        memoryStoreEvictionPolicy：如果内存中的数据超过缓存的限制，向磁盘缓存的策略，默认是：LRU，可选FIFO，LFU
+        1、FIFO：first in first out：先进先出
+        2、LFU：Less Frequently Used(最少使用)，意思是一直以来最少被使用的。缓存的元素有一个hit 属性，hit值最小的将会被清出缓存。
+        3、LRU ，Least Recently Used(最近最少使用). (ehcache 默认值).缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。
+    -->
+    <!--defaultCache:echcache的默认缓存策略 -->
+    <defaultCache memoryStoreEvictionPolicy="LRU" diskExpiryThreadIntervalSeconds="120" maxElementsOnDisk="10000000"
+                  timeToLiveSeconds="120" timeToIdleSeconds="120" eternal="false" maxElementsInMemory="10000" overflowToDisk="true">
+        <persistence strategy="localTempSwap"/>
+    </defaultCache>
+    <!-- 自定义缓存策略 -->
+    <cache memoryStoreEvictionPolicy="LRU" diskExpiryThreadIntervalSeconds="120" maxElementsOnDisk="10000000"
+           timeToLiveSeconds="120" timeToIdleSeconds="120" eternal="false" maxElementsInMemory="10000" name="students">
+        <persistence strategy="localTempSwap"/>
+    </cache>
+</ehcache>

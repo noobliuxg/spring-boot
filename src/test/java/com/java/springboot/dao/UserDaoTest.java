@@ -3,7 +3,6 @@ package com.java.springboot.dao;
 
 import com.java.springboot.Application;
 import com.java.springboot.entity.Student;
-import org.hibernate.criterion.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
