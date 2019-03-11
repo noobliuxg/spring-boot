@@ -1,10 +1,21 @@
 package com.java.springboot.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "TEACHER")
 public class Teacher {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="ID")
     private long id;
+
+    @Column(name="TEA_NAME")
     private String teaName;
-    private long teaAge;
+
+    @Column(name = "TEA_AGE")
+    private int teaAge;
 
     public long getId() {
         return id;
@@ -22,11 +33,11 @@ public class Teacher {
         this.teaName = teaName;
     }
 
-    public long getTeaAge() {
+    public int getTeaAge() {
         return teaAge;
     }
 
-    public void setTeaAge(long teaAge) {
+    public void setTeaAge(int teaAge) {
         this.teaAge = teaAge;
     }
 

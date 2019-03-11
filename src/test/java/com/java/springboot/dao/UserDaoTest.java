@@ -1,107 +1,149 @@
 package com.java.springboot.dao;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+
 import com.java.springboot.Application;
 import com.java.springboot.entity.Student;
+import org.hibernate.criterion.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 public class UserDaoTest {
 
     @Resource
-    private UserMapper userMapper;
+    private StudentDao dao;
 
-
-    @Transactional
-    @Rollback(false)
     @Test
-    public void insert(){
-        for (int i=0;;){
-            if (i>=20) break;
-            i++;
-            Student student = new Student();
-            student.setStuName("liuxg"+i);
-            student.setStuAge(12);
-            userMapper.insert(student);
-            System.out.println("获取到的ID:"+student.getId());
-        }
+    public void testInsert(){
+        Student student = new Student();
+        Student save = dao.save(student);
+        System.out.println(save);
     }
 
     @Test
-    public void selectAll(){
-        List<Student> students = userMapper.selectAll();
+    public void testUpate(){
+        Optional<Student> optional = dao.findById(27l);
+        Student student = optional.get();
+        student.setStuName("liu");
+        dao.save(student);
+    }
 
+
+    @Transactional
+    @Test
+    public void testSelectOne(){
+        Student student = dao.getOne(27l);
+        System.out.println(student);
+
+    }
+
+
+    @Transactional
+    @Test
+    public void testSelectOneByExample(){
+        Student student = new Student();
+        student.setId(27l);
+        Example<Student> example = Example.of(student);
+        Optional<Student> optional = dao.findOne(Example.of(student));
+        student = optional.get();
+        System.out.println(student);
+    }
+
+    @Test
+    public void testQuery1(){
+        Student student = dao.findStudent(1l);
+        System.out.println(student);
+    }
+
+    @Test
+    public void testQuery2(){
+        List<Student> students = dao.findAllStudent();
         students.forEach(student -> {
             System.out.println(student);
         });
     }
 
     @Test
-    public void selectOne(){
-        Student student = userMapper.selectOne(1);
+    public void testQuery3(){
+        List<Student> students = dao.findStudentByExample("%liu%",12);
+        students.forEach(student -> {
+            System.out.println(student);
+        });
+    }
+
+    @Test
+    public void testNativeQuery1(){
+        Student student = dao.findNative(1l);
         System.out.println(student);
     }
 
     @Test
-    public void selectWhere(){
-        Student student = new Student();
-        student.setId(2);
-        List<Student> students = userMapper.selectWhere(student);
-        students.forEach(stu -> {
-            System.out.println(stu);
-        });
-        student.setId(0l);
-        student.setStuName("liuxg");
-        students = userMapper.selectWhere(student);
-        students.forEach(stu -> {
-            System.out.println(stu);
-        });
-        student.setId(0l);
-        student.setStuName(null);
-        student.setStuAge(12);
-        students = userMapper.selectWhere(student);
-        students.forEach(stu -> {
-            System.out.println(stu);
+    public void testNativeQuery2(){
+        List<Student> students = dao.findNatveStudentByExample("%liu%",12);
+        students.forEach(student -> {
+            System.out.println(student);
         });
     }
 
+
+    @Transactional
+    @Rollback(false)
+    @Test
+    public void testUpdateQuery(){
+        dao.updateStudent("liuxinguai",27,27l);
+    }
+
+    @Transactional
+    @Rollback(false)
+    @Test
+    public void testNativeUpdateQuery(){
+        dao.updateNativeStudent("liuxin",27,27l);
+    }
+
+
+    @Transactional
+    @Rollback(false)
+    @Test
+    public void testdeleteQuery(){
+        dao.deleteStudent(27l);
+    }
+
+    @Transactional
+    @Rollback(false)
+    @Test
+    public void testNativedeleteQuery(){
+        dao.deleteNativeStudent(26l);
+    }
 
     @Test
-    public void update(){
-        Student student = new Student();
-        student.setId(1l);
-        student.setStuName("liuxinguai");
-        student.setStuAge(15);
-        userMapper.update(student);
-    }
+    public void testPageQuery(){
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Student> page = dao.studentPage(pageable);
+        page.forEach(student -> {
+            System.out.println(student);
+        });
 
 
-    @Test
-    public void delete(){
-        userMapper.delete(6);
-    }
-
-
-    @Test
-    public void page(){
-        PageHelper.startPage(1,10,"id desc");
-        List<Student> students = userMapper.selectAll();
-        PageInfo<Student> page = new PageInfo<>(students);
-        List<Student> list = page.getList();
-        list.forEach(stu -> {
-            System.out.println(stu);
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(Sort.Order.desc("ID"));
+        Sort sort = Sort.by(orders);
+        pageable = PageRequest.of(0,10,sort);
+        page = dao.studentPage(pageable);
+        page.forEach(student -> {
+            System.out.println(student);
         });
     }
+
 
 }
